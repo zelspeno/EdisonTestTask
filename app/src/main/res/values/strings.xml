@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">EdisonTestTask</string>
+    <string name="searchViewHint">поиск</string>
+    <string name="gamesList">Список игр</string>
+    <string name="imageDescription">Изображение</string>
+    <string name="news">Новости</string>
+    <string name="backDescription">Назад</string>
+</resources>

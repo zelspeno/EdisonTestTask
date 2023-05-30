@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    card_view:cardCornerRadius="15dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/recyclerViewItemColor">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/newsRVImageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="192dp"
+            card_view:cardCornerRadius="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/newsRVImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/imageDescription" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/newsRVName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/salmapro_medium"
+            android:textColor="@color/mainTextColorDark"
+            android:textAlignment="textStart"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toBottomOf="@id/newsRVImageContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/newsRVDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/salmapro_medium"
+            android:textColor="@color/mainTextColorDark"
+            android:textAlignment="textStart"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toBottomOf="@id/newsRVName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/newsRVBody"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/salmapro_medium"
+            android:textColor="@color/mainTextColorDark"
+            android:textAlignment="textStart"
+            android:maxLines="3"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toBottomOf="@id/newsRVDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
