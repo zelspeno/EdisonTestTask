@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/salmapro_medium"
                 android:textColor="@color/headerTextColor"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/moreBackButton"
@@ -46,7 +46,9 @@
                 android:contentDescription="@string/backDescription"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:clickable="true"
+                android:focusable="true"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -75,7 +77,8 @@
         app:layout_constraintTop_toBottomOf="@id/moreDate">
 
         <ImageView
-            android:id="@+id/newsRVImage"
+            android:id="@+id/moreImage"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/imageDescription" />
@@ -85,14 +88,16 @@
     <TextView
         android:id="@+id/moreBody"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
         android:fontFamily="@font/salmapro_medium"
         android:textAlignment="textStart"
         android:textColor="@color/mainTextColorLight"
+        android:scrollbars="vertical"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="@id/moreDate"
         app:layout_constraintStart_toStartOf="@id/moreDate"
-        app:layout_constraintTop_toBottomOf="@id/newsRVImageContainer" />
+        app:layout_constraintTop_toBottomOf="@id/newsRVImageContainer"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,4 +5,6 @@
     <string name="imageDescription">Изображение</string>
     <string name="news">Новости</string>
     <string name="backDescription">Назад</string>
+    <string name="newsNotFound">Для текущей игры, на данный момент, нет новостей</string>
+    <string name="pleaseSwipeToRefresh">Пожалуйста, обновите страницу</string>
 </resources>

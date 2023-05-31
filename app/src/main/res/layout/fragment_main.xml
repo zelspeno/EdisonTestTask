@@ -24,7 +24,10 @@
             android:id="@+id/mainSearchView"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:theme="@style/AppSearchView"
             android:background="@drawable/custom_searchview"
+            android:fontFamily="@font/salmapro_medium"
+            android:textColor="@color/mainTextColorLight"
             app:queryHint="@string/searchViewHint"
             android:layout_margin="8dp" />
 
@@ -44,14 +47,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainToolbar" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gamesRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@id/gamesListTextView"
-        app:layout_constraintEnd_toEndOf="@id/gamesListTextView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/mainSwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gamesListTextView"
-        tools:listitem="@layout/games_recyclerview_item"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/gamesRecyclerViewNotFound"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/salmapro_medium"
+                android:textColor="@color/mainTextColorLight"
+                android:text="@string/pleaseSwipeToRefresh"
+                android:gravity="center"
+                android:visibility="invisible"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gamesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:listitem="@layout/games_recyclerview_item"/>
+
+        </FrameLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
