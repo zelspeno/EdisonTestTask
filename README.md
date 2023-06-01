@@ -1,6 +1,6 @@
 # Тестовое задание для EDISON Software Development Centre
 
-![overview](https://github.com/zelspeno/EdisonTestTask/assets/75141607/d248584e-89ec-469f-bae8-4416ea0eca05)
+![overview](https://github.com/zelspeno/EdisonTestTask/assets/75141607/37553a19-b42e-4285-ab74-7d0da50e15a2)
 
 
 ## Скачивание и установка
