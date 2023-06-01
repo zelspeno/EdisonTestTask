@@ -126,8 +126,8 @@ class NewsFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             addItemDecoration(
                 DividerItemDecoration(
-                    activity,
-                    DividerItemDecoration.HORIZONTAL
+                    recyclerView.context,
+                    (layoutManager as LinearLayoutManager).orientation
                 )
             )
         }
