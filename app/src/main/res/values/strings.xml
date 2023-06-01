@@ -7,4 +7,5 @@
     <string name="backDescription">Назад</string>
     <string name="newsNotFound">Для текущей игры, на данный момент, нет новостей</string>
     <string name="pleaseSwipeToRefresh">Пожалуйста, обновите страницу</string>
+    <string name="searchPrompt">Введите больше символов</string>
 </resources>

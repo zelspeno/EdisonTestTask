@@ -49,20 +49,25 @@ class MoreFragment : Fragment() {
                 moveToNewsFragment(view)
             }
         }
+
         displayHtml(news.body)
+
         headerPhoto = news.headerPhoto
         Picasso.get().load(headerPhoto).into(binding.moreImage)
 
         return binding.root
     }
 
+    /** Make text([html]) html-tags and html-images sensitive then display it  */
     private fun displayHtml(html: String) {
         val imageGetter = ImageGetter(resources, binding.moreBody)
         val styledText = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY, imageGetter, null)
         binding.moreBody.movementMethod = LinkMovementMethod.getInstance()
+        binding.moreBody.setLinkTextColor(resources.getColor(R.color.mainTextColorDark, null))
         binding.moreBody.text = styledText
     }
 
+    /** Move to NewsFragment */
     private fun moveToNewsFragment(v: View?) {
         val bundle =
             Bundle().apply { putSerializable("game", game) }

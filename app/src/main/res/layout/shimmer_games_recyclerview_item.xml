@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:background="@color/recyclerViewItemColor"
         android:padding="8dp">
-        
+
         <androidx.cardview.widget.CardView
             android:id="@+id/gamesRVImageContainer"
             android:layout_width="192dp"
@@ -26,14 +26,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/gamesRVImage"
-            android:scaleType="fitXY"
-            android:src="@drawable/steam_header"
-            android:background="@color/mainBackgroundColor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/imageDescription" />
+            <ImageView
+                android:id="@+id/gamesRVImage"
+                android:scaleType="fitXY"
+                android:background="@color/mainBackgroundColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/imageDescription" />
 
         </androidx.cardview.widget.CardView>
 
@@ -45,6 +44,7 @@
             android:textColor="@color/mainTextColorDark"
             android:textAlignment="textStart"
             android:layout_marginStart="8dp"
+            android:background="@color/mainBackgroundColor"
             app:layout_constraintTop_toTopOf="@id/gamesRVImageContainer"
             app:layout_constraintStart_toEndOf="@id/gamesRVImageContainer"
             app:layout_constraintEnd_toEndOf="parent" />

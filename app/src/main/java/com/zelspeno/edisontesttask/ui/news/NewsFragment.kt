@@ -1,7 +1,6 @@
 package com.zelspeno.edisontesttask.ui.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,58 +41,87 @@ class NewsFragment : Fragment() {
 
         val swipeRefresher = binding.newsSwipeRefreshLayout
 
+        fillList()
+
         swipeRefresher.setOnRefreshListener {
-            binding.newsRecyclerView.visibility = View.GONE
-            binding.newsNotFound.visibility = View.INVISIBLE
-            updateList()
-            swipeRefresher.isRefreshing = false
+            onSwipeUpdateList()
         }
 
         binding.newsGameName.text = game.name
+
         binding.newsBackButton.setOnClickListener {
             moveToMainFragment(view)
         }
 
-        fillList()
-
         return binding.root
     }
 
+    /** Init(1st) fill RecyclerView */
     private fun fillList() {
+
+        with(binding) {
+            newsShimmerRecyclerView.visibility = View.VISIBLE
+            newsRecyclerView.visibility = View.GONE
+            newsNotFound.visibility = View.GONE
+            newsShimmerRecyclerView.startShimmer()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.getNewsForGame(game.gameID)
                 viewModel.newsForGame.collect {
-                    if (it != null) {
-                        val newsUI = prepareDataToUI(it)
-                        adapter = CustomNewsListRecyclerAdapter(newsUI)
-                        sendDataToRecyclerView(adapter!!)
-                        binding.newsRecyclerView.visibility = View.VISIBLE
-                    } else {
-                        binding.newsNotFound.visibility = View.VISIBLE
+                    with(binding) {
+                        if (it != null) {
+                            val newsUI = prepareDataToUI(it)
+                            adapter = CustomNewsListRecyclerAdapter(newsUI)
+                            sendDataToRecyclerView(adapter!!)
+                            newsShimmerRecyclerView.stopShimmer()
+                            newsShimmerRecyclerView.visibility = View.GONE
+                            newsRecyclerView.visibility = View.VISIBLE
+                            newsNotFound.visibility = View.GONE
+                        } else {
+                            newsShimmerRecyclerView.stopShimmer()
+                            newsShimmerRecyclerView.visibility = View.GONE
+                            newsRecyclerView.visibility = View.GONE
+                            newsNotFound.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun updateList() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.getNewsForGame(game.gameID)
-                viewModel.newsForGame.collect {
-                    if (it != null) {
-                        val newsUI = prepareDataToUI(it)
-                        adapter?.updateList(newsUI)
-                        binding.newsRecyclerView.visibility = View.VISIBLE
-                    } else {
-                        binding.newsNotFound.visibility = View.VISIBLE
+    /** Update data on RecyclerView when user pull-to-refresh */
+    private fun onSwipeUpdateList() {
+        with(binding) {
+            newsRecyclerView.visibility = View.GONE
+            newsNotFound.visibility = View.GONE
+            newsShimmerRecyclerView.visibility = View.VISIBLE
+            newsShimmerRecyclerView.startShimmer()
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    viewModel.getNewsForGame(game.gameID)
+                    viewModel.newsForGame.collect {
+                        if (it != null) {
+                            val newsUI = prepareDataToUI(it)
+                            adapter?.updateList(newsUI)
+                            newsSwipeRefreshLayout.isRefreshing = false
+                            newsShimmerRecyclerView.stopShimmer()
+                            newsShimmerRecyclerView.visibility = View.GONE
+                            newsRecyclerView.visibility = View.VISIBLE
+                        } else {
+                            newsSwipeRefreshLayout.isRefreshing = false
+                            newsShimmerRecyclerView.stopShimmer()
+                            newsShimmerRecyclerView.visibility = View.GONE
+                            newsNotFound.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
         }
     }
 
+    /** Init settings for RecyclerView */
     private fun sendDataToRecyclerView(adapterRV: CustomNewsListRecyclerAdapter) {
         val recyclerView = binding.newsRecyclerView
         with(recyclerView) {
@@ -120,10 +148,12 @@ class NewsFragment : Fragment() {
         })
     }
 
+    /** Move to MainFragment */
     private fun moveToMainFragment(v: View?) {
         v?.findNavController()?.navigate(R.id.navigation_mainFragment)
     }
 
+    /** Get [data] from storage then convert it to display's List<[NewsUI]> */
     private fun prepareDataToUI(data: List<News>): List<NewsUI> {
         val res = mutableListOf<NewsUI>()
         for (i in data) {
@@ -141,6 +171,8 @@ class NewsFragment : Fragment() {
         return res
     }
 
+    /** Get unix-type datetime (ex.1672531200) and convert it
+     * to Human-type datetime(ex. 1 января 2023, 00:00:00) */
     private fun getUIDateTimeFromUnix(unix: Long): String {
         val sdf = SimpleDateFormat(
             "dd MMMM yyyy, HH:mm:ss",
@@ -148,6 +180,9 @@ class NewsFragment : Fragment() {
         )
         return sdf.format(unix * 1000)
     }
+
+    /** Get news's path photo and return path, where it could be downloaded
+     * or return path of game's header photo */
 
     private fun getHeaderPhoto(text: String): String {
         var res = ""
@@ -160,6 +195,7 @@ class NewsFragment : Fragment() {
         return res
     }
 
+    /** Get [text] from request then convert it to HTML-type text and return */
     private fun migrateTextToHtml(text: String): String {
         var res = text
             .replace("{STEAM_CLAN_IMAGE}", "https://clan.akamai.steamstatic.com/images")

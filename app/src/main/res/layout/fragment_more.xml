@@ -79,6 +79,8 @@
         <ImageView
             android:id="@+id/moreImage"
             android:scaleType="fitXY"
+            android:src="@drawable/steam_header"
+            android:background="@color/mainBackgroundColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/imageDescription" />
