@@ -7,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.*
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zelspeno.edisontesttask.R
 import com.zelspeno.edisontesttask.databinding.FragmentMainBinding
-import com.zelspeno.edisontesttask.source.Apps
 import com.zelspeno.edisontesttask.source.AppsUI
-import com.zelspeno.edisontesttask.source.Const
 import com.zelspeno.edisontesttask.utils.viewModelCreator
 import kotlinx.coroutines.launch
 
@@ -47,25 +44,8 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    /** Get [list] from storage then convert it to display's List<[AppsUI]> */
-    private fun prepareDataToUI(list: List<Apps>): List<AppsUI> {
-        val result = mutableListOf<AppsUI>()
-        for (i in list) {
-            if (i.name.isNotEmpty()) {
-                result.add(
-                    AppsUI(
-                        gameID = i.gameID,
-                        name = i.name,
-                        image = getHeaderImagePathByAppID(i.gameID)
-                    )
-                )
-            }
-        }
-        return result
-    }
-
     /** Init settings for RecyclerView */
-    private fun sendDataToRecyclerView(adapterRV: CustomGamesListRecyclerAdapter) {
+    private fun sendDataToRecyclerView(v: View?, adapterRV: CustomGamesListRecyclerAdapter) {
         val recyclerView = binding.gamesRecyclerView
         with(recyclerView) {
             adapter = adapterRV
@@ -82,8 +62,7 @@ class MainFragment : Fragment() {
             override fun onItemClick(game: AppsUI) {
                 val bundle =
                     Bundle().apply { putSerializable("game", game) }
-                view?.findNavController()
-                    ?.navigate(R.id.navigation_newsFragment, bundle)
+                viewModel.moveToFragment(v, R.id.navigation_newsFragment, bundle)
             }
         })
     }
@@ -104,9 +83,9 @@ class MainFragment : Fragment() {
                     viewModel.getListApps()
                     viewModel.gamesList.collect {
                         if (it != null) {
-                            val gamesList = prepareDataToUI(it)
+                            val gamesList = viewModel.prepareAppsToUI(it)
                             adapter = CustomGamesListRecyclerAdapter(gamesList)
-                            sendDataToRecyclerView(adapter!!)
+                            sendDataToRecyclerView(view, adapter!!)
                             gamesShimmerRecyclerView.stopShimmer()
                             gamesShimmerRecyclerView.visibility = View.GONE
                             gamesRecyclerView.visibility = View.VISIBLE
@@ -137,7 +116,7 @@ class MainFragment : Fragment() {
                     viewModel.getListApps()
                     viewModel.gamesList.collect {
                         if (it != null) {
-                            val gamesList = prepareDataToUI(it)
+                            val gamesList = viewModel.prepareAppsToUI(it)
                             adapter?.updateList(gamesList)
                             mainSwipeRefreshLayout.isRefreshing = false
                             gamesShimmerRecyclerView.stopShimmer()
@@ -155,6 +134,36 @@ class MainFragment : Fragment() {
         }
     }
 
+    /** Update data on RecyclerView when user clear [searchView] */
+    private fun onClearSearchViewFillList(searchView: SearchView) {
+        binding.mainSearchPrompt.visibility = View.INVISIBLE
+        binding.gamesRecyclerView.visibility = View.GONE
+        binding.gamesRecyclerViewNotFound.visibility = View.GONE
+        binding.gamesShimmerRecyclerView.visibility = View.VISIBLE
+        binding.gamesShimmerRecyclerView.startShimmer()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                searchView.setQuery("", false)
+                searchView.clearFocus()
+                viewModel.getListApps()
+                viewModel.gamesList.collect {
+                    if (it != null) {
+                        val gamesList = viewModel.prepareAppsToUI(it)
+                        adapter?.updateList(gamesList)
+                        binding.gamesShimmerRecyclerView.stopShimmer()
+                        binding.gamesShimmerRecyclerView.visibility = View.GONE
+                        binding.gamesRecyclerView.visibility = View.VISIBLE
+                    } else {
+                        binding.gamesShimmerRecyclerView.stopShimmer()
+                        binding.gamesShimmerRecyclerView.visibility = View.GONE
+                        binding.gamesRecyclerViewNotFound.visibility = View.VISIBLE
+                    }
+                }
+
+            }
+        }
+    }
+
     /** Init settings for [searchView] */
     private fun initSearchViewSettings(searchView: SearchView) {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -168,60 +177,16 @@ class MainFragment : Fragment() {
                 }
                 else if (text?.length!! > 3) {
                     binding.mainSearchPrompt.visibility = View.INVISIBLE
-                    fillListWithSearch(text)
+                    val initList = adapter?.getList()
+                    val searchList = viewModel.getListWithSearch(initList, text)
+                    adapter?.updateList(searchList)
                     return false
                 } else {
-                    binding.mainSearchPrompt.visibility = View.INVISIBLE
-                    binding.gamesRecyclerView.visibility = View.GONE
-                    binding.gamesRecyclerViewNotFound.visibility = View.GONE
-                    binding.gamesShimmerRecyclerView.visibility = View.VISIBLE
-                    binding.gamesShimmerRecyclerView.startShimmer()
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            searchView.setQuery("", false)
-                            searchView.clearFocus()
-                            viewModel.getListApps()
-                            viewModel.gamesList.collect {
-                                if (it != null) {
-                                    val gamesList = prepareDataToUI(it)
-                                    adapter?.updateList(gamesList)
-                                    binding.gamesShimmerRecyclerView.stopShimmer()
-                                    binding.gamesShimmerRecyclerView.visibility = View.GONE
-                                    binding.gamesRecyclerView.visibility = View.VISIBLE
-                                } else {
-                                    binding.gamesShimmerRecyclerView.stopShimmer()
-                                    binding.gamesShimmerRecyclerView.visibility = View.GONE
-                                    binding.gamesRecyclerViewNotFound.visibility = View.VISIBLE
-                                }
-                            }
-
-                        }
-                    }
+                    onClearSearchViewFillList(searchView)
                 }
                 return true
             }
+
         })
     }
-
-    /** Logic when user success text ([text].length>3) on SearchView  */
-    private fun fillListWithSearch(text: String?) {
-        val initList: List<AppsUI>? = adapter?.getList()
-        val resList = mutableListOf<AppsUI>()
-
-        if (initList != null) {
-            for (i in initList) {
-                if (i.name.lowercase().contains(text?.lowercase().toString())) {
-                    if (i !in resList) {
-                        resList.add(i)
-                    }
-                }
-            }
-        }
-        adapter?.updateList(resList)
-    }
-
-    /** Get main (Header) image of App by it's [appid] */
-    private fun getHeaderImagePathByAppID(appid: Long): String =
-        "${Const.STORAGE_URL}/apps/$appid/header.jpg"
-
 }

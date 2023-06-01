@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.squareup.picasso.Picasso
 import com.zelspeno.edisontesttask.R
 import com.zelspeno.edisontesttask.databinding.FragmentMoreBinding
@@ -39,23 +38,29 @@ class MoreFragment : Fragment() {
         news = this.arguments?.getSerializable("news") as NewsUI
         game = this.arguments?.getSerializable("game") as AppsUI
 
+        binding.moreBackButton.setOnClickListener {
+            val bundle =
+                Bundle().apply { putSerializable("game", game) }
+            viewModel.moveToFragment(view, R.id.navigation_newsFragment, bundle)
+        }
+
+        fillUI()
+
+        return binding.root
+    }
+
+    /** Init fill User Interface */
+    private fun fillUI() {
         with(binding) {
             moreNewsName.text = news.title
             moreDate.text = news.datetime
-
             moreBody.movementMethod = ScrollingMovementMethod()
-
-            moreBackButton.setOnClickListener {
-                moveToNewsFragment(view)
-            }
         }
 
         displayHtml(news.body)
 
         headerPhoto = news.headerPhoto
         Picasso.get().load(headerPhoto).into(binding.moreImage)
-
-        return binding.root
     }
 
     /** Make text([html]) html-tags and html-images sensitive then display it  */
@@ -66,14 +71,5 @@ class MoreFragment : Fragment() {
         binding.moreBody.setLinkTextColor(resources.getColor(R.color.mainTextColorDark, null))
         binding.moreBody.text = styledText
     }
-
-    /** Move to NewsFragment */
-    private fun moveToNewsFragment(v: View?) {
-        val bundle =
-            Bundle().apply { putSerializable("game", game) }
-        v?.findNavController()
-            ?.navigate(R.id.navigation_newsFragment, bundle)
-    }
-
 }
 

@@ -3,9 +3,7 @@ package com.zelspeno.edisontesttask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zelspeno.edisontesttask.databinding.ActivityMainBinding
-import com.zelspeno.edisontesttask.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

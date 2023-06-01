@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zelspeno.edisontesttask.R
-import com.zelspeno.edisontesttask.source.News
 import com.zelspeno.edisontesttask.source.NewsUI
 
 class CustomNewsListRecyclerAdapter(private var news: List<NewsUI>):

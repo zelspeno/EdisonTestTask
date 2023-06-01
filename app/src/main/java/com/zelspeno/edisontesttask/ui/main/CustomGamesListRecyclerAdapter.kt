@@ -1,7 +1,5 @@
 package com.zelspeno.edisontesttask.ui.main
 
-import android.graphics.drawable.Drawable
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zelspeno.edisontesttask.R
-import com.zelspeno.edisontesttask.source.Apps
 import com.zelspeno.edisontesttask.source.AppsUI
 
 class CustomGamesListRecyclerAdapter(private var games: List<AppsUI>):
